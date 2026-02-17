@@ -35,15 +35,18 @@
    > WithdrawalAdapterStub
 PASS tests/stakingvault.test.ts
   StakingVault migration suite
-    ✓ owner fund/withdraw happy path (334 ms)
-    ✓ access control on owner-only messages (122 ms)
-    ✓ depositor-only deposit to beacon + pause/resume gating (223 ms)
-    ✓ trigger withdrawal sends to adapter and refunds excess (133 ms)
-    ✓ bounce path refunds pending fee when adapter message bounces (172 ms)
-    ✓ upgrade gating + ossify blocks further authorizations (160 ms)
+    ✓ owner fund/withdraw happy path (412 ms)
+    ✓ access control on owner-only messages (196 ms)
+    ✓ depositor-only deposit to beacon + pause/resume gating (312 ms)
+    ✓ trigger withdrawal sends to adapter and refunds excess (164 ms)
+    ✓ insufficient fee fails closed (136 ms)
+    ✓ bounce path refunds pending fee when adapter message bounces (async+bounce) (200 ms)
+    ✓ query replay is rejected (replay-protection invariant) (209 ms)
+    ✓ invalid args fail: zero validator count / zero keysCount (171 ms)
+    ✓ upgrade gating + ossify blocks further authorizations (upgrade/ossify) (185 ms)
 
 Test Suites: 1 passed, 1 total
-Tests:       6 passed, 6 total
+Tests:       9 passed, 9 total
 Snapshots:   0 total
-Time:        3.029 s, estimated 4 s
+Time:        5.157 s
 Ran all test suites.

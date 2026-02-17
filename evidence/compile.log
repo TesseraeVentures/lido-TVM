@@ -1,3 +1,7 @@
+
+> ton-stakingvault-migration@1.0.0 build
+> npx tact -c tact.config.json
+
 💼 Compiling project staking_vault ...
    > StakingVault: tact compiler
    > StakingVault: func compiler

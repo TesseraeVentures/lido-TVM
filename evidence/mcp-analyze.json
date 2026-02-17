@@ -1,1 +1,60 @@
-{"ok":true,"jobId":"9d128d06-afce-41aa-a908-748d913a18ee","tier":"demo","toolName":"ton_migrate_analyze","adapterPath":"/opt/ton-dev-mcp/mcp/dist/server.js","response":{"success":true,"sourceLanguage":"solidity","complexityScore":6,"estimatedEffort":"2-4 weeks","patterns":[{"name":"Beacon Pattern","description":"Beacon-based multi-instance upgrades","tonEquivalent":"Controller/beacon contract issuing versioned set_code updates","complexityImpact":3,"notes":"Replace beacon indirection with explicit code-version controller contract."},{"name":"Complex Modifiers","description":"Nested/parameterized modifiers","tonEquivalent":"Inline precondition blocks + reusable guard helpers","complexityImpact":2,"notes":"Inline modifier stack in execution order and preserve side-effects."}],"architectureChanges":[{"category":"messaging","title":"Asynchronous Message Passing","description":"TON uses async actor-style interactions, no synchronous reentry-like call stack.","recommendation":"Create request/response messages with query_id and bounce handlers."},{"category":"storage","title":"Cell-Oriented Storage","description":"State is encoded in cells/slices/refs, not a flat EVM slot map.","recommendation":"Define stable load/save layouts and include state schema version."},{"category":"gas","title":"Forward Fee Aware Design","description":"Message forwarding cost and storage rent change control flow economics.","recommendation":"Attach value budgeting per outbound message and rent-safe balances."},{"category":"upgrade","title":"TVM set_code Upgrade Recipes","description":"Proxy families map to guarded set_code flows with data migration.","recommendation":"Implement upgrade opcode + governance check + post-upgrade migrate()."},{"category":"access-control","title":"Modifier Inlining","description":"Modifier stacks require explicit pre/post condition injection in TON handlers.","recommendation":"Inline modifiers in deterministic order and preserve revert/error semantics."}],"deepSignals":{"inheritanceChains":[],"interfaceImports":[],"proxyStyle":["beacon"],"modifiers":["onlyOwner"],"externalCalls":[]},"summary":"Migration Analysis Summary\n==========================\nSource Language: SOLIDITY\nFiles: 1\nLines of Code: 13\nComplexity Score: 6/10\nEstimated Effort: 2-4 weeks\n\nDeep Signals:\n- Inheritance chains: 0\n- Interface imports: 0\n- Proxy styles: beacon\n- Modifiers: 1\n- External call edges: 0\n\nRecommended pipeline:\n1) Flatten inheritance + resolve interfaces\n2) Rewrite upgrades to set_code recipes\n3) Inline modifiers\n4) Transform external call graph to async state machines"}}
+{
+  "ok": true,
+  "jobId": "1452e262-b275-4e6d-a938-bb362b11d8d4",
+  "tier": "demo",
+  "toolName": "ton_migrate_analyze",
+  "adapterPath": "/opt/ton-dev-mcp/mcp/dist/server.js",
+  "response": {
+    "success": true,
+    "sourceLanguage": "solidity",
+    "complexityScore": 5,
+    "estimatedEffort": "1-2 weeks",
+    "patterns": [
+      {
+        "name": "Beacon Pattern",
+        "description": "Beacon-based multi-instance upgrades",
+        "tonEquivalent": "Controller/beacon contract issuing versioned set_code updates",
+        "complexityImpact": 3,
+        "notes": "Replace beacon indirection with explicit code-version controller contract."
+      }
+    ],
+    "architectureChanges": [
+      {
+        "category": "messaging",
+        "title": "Asynchronous Message Passing",
+        "description": "TON uses async actor-style interactions, no synchronous reentry-like call stack.",
+        "recommendation": "Create request/response messages with query_id and bounce handlers."
+      },
+      {
+        "category": "storage",
+        "title": "Cell-Oriented Storage",
+        "description": "State is encoded in cells/slices/refs, not a flat EVM slot map.",
+        "recommendation": "Define stable load/save layouts and include state schema version."
+      },
+      {
+        "category": "gas",
+        "title": "Forward Fee Aware Design",
+        "description": "Message forwarding cost and storage rent change control flow economics.",
+        "recommendation": "Attach value budgeting per outbound message and rent-safe balances."
+      },
+      {
+        "category": "upgrade",
+        "title": "TVM set_code Upgrade Recipes",
+        "description": "Proxy families map to guarded set_code flows with data migration.",
+        "recommendation": "Implement upgrade opcode + governance check + post-upgrade migrate()."
+      }
+    ],
+    "deepSignals": {
+      "inheritanceChains": [],
+      "interfaceImports": [
+        "@stdlib/deploy"
+      ],
+      "proxyStyle": [
+        "beacon"
+      ],
+      "modifiers": [],
+      "externalCalls": []
+    },
+    "summary": "Migration Analysis Summary\n==========================\nSource Language: SOLIDITY\nFiles: 1\nLines of Code: 253\nComplexity Score: 5/10\nEstimated Effort: 1-2 weeks\n\nDeep Signals:\n- Inheritance chains: 0\n- Interface imports: 1\n- Proxy styles: beacon\n- Modifiers: 0\n- External call edges: 0\n\nRecommended pipeline:\n1) Flatten inheritance + resolve interfaces\n2) Rewrite upgrades to set_code recipes\n3) Inline modifiers\n4) Transform external call graph to async state machines"
+  }
+}

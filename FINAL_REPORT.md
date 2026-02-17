@@ -1,56 +1,42 @@
-# TON StakingVault Migration - Final E2E Report
+# Lido EVM → TVM Migration Program Final Report
 
-## Scope Executed
-Completed autonomous run for requested 5-step pipeline in `/root/clawd/output/ton-stakingvault-migration`.
+Date: 2026-02-17
+Repo: `/root/clawd/lido-TVM`
 
-## Deliverables Produced
-1. **Opcode/interface spec**
-   - `docs/TON_STAKINGVAULT_OPCODE_SPEC.md`
-2. **TON contract set (Tact)**
-   - `contracts/StakingVault.tact`
-   - `contracts/UpgradeController.tact`
-   - `contracts/WithdrawalAdapterStub.tact`
-   - Build config: `tact.config.json`
-3. **Comprehensive tests**
-   - `tests/stakingvault.test.ts`
-   - Covers positive/negative/access-control/pause gating/bounce+refund/ossify/upgrade-gating
-4. **TON Dev Skills mini-app/API validation artifacts**
-   - `evidence/mcp-analyze.json`
-   - `evidence/mcp-generate.json`
-   - `evidence/mcp-compile.json`
-   - `evidence/mcp-audit.json`
-5. **Evidence logs**
-   - `evidence/compile.log`
-   - `evidence/test-run.log`
+## Pass/Fail matrix by requested phase
 
-## Command Evidence
-- Build: `npx tact -c tact.config.json` ✅
-- Tests: `npm test` ✅ (6/6 passing)
-- Mini-app/API:
-  - `analyze` ✅
-  - `generate` ✅
-  - `compile` ❌ (`Unknown language: undefined` from API path)
-  - `audit` ✅ (semantic fail with high findings)
-
-## Pass/Fail Matrix
-| Step | Status | Notes |
+| Phase | Status | Evidence |
 |---|---|---|
-| (1) Exact TON opcode/interface spec | PASS | Spec doc includes opcodes, message formats, query_id policy, state, errors, log surface |
-| (2) Full contract set implementation | PASS | Vault + upgrade controller + adapter stub implemented and compiled |
-| (3) Tests incl. requested scenarios | PASS | 6 scenario tests pass locally in TON sandbox |
-| (4) TON Dev Skills mini-app/API validation | PARTIAL | Analyze/generate/audit succeeded; compile endpoint failed due API language hint issue |
-| (5) Evidence artifacts + concise report | PASS | Evidence files and this report provided |
+| (1) Inventory `lidofinance` repos/contracts + scope selection | PASS | `docs/PHASE1_INVENTORY_SCOPE.md`, `evidence/lidofinance-repos.json`, `reference/{core,lido-vault,withdrawals-manager-stub}` |
+| (2) Formal behavior specs and invariants from EVM code/tests | PASS | `docs/PHASE2_BEHAVIOR_SPEC_INVARIANTS.md` (derived from `core/contracts/0.8.25/vaults/StakingVault.sol` and `core/test/.../stakingVault.test.ts`) |
+| (3) Implement TON/Tact equivalents + adapters | PASS | `contracts/StakingVault.tact`, `contracts/UpgradeController.tact`, `contracts/WithdrawalAdapterStub.tact` |
+| (4) Exhaustive tests + execution | PASS | `tests/stakingvault.test.ts` (9 tests covering positive/negative/access-control/async+bounce/replay/upgrade/ossify/economic constraints), `evidence/test-run.log` |
+| (5) TON Dev Skills miniapp/API buyer-proof hard gate | PASS | `evidence/mcp-{analyze,generate,compile,audit}.json`, `evidence/miniapp-e2e-buyer-proof.json` (evidence-pack endpoints verified 200/200) |
+| (6) TVM testnet-ready deployment package | PASS (template level) | `deploy/.env.testnet.example`, `scripts/deploy-testnet-plan.sh`, `scripts/smoke-test.sh`, `docs/TVM_TESTNET_RUNBOOK.md` |
+| (7) Commit and push meaningful increments | PARTIAL | Local commits completed; push blocked by remote auth status (see blocker section) |
+| (8) Final concise report with deltas/next actions | PASS | this file |
 
-## Blockers / Gaps
-1. **Mini-app compile endpoint gap**
-   - Failure: `Unknown language: undefined` from `ton_compile` via `/api/mcp`.
-   - Root cause: current API route does not pass `sourceLanguage` for compile/audit actions.
-2. **Audit findings (must-fix for production)**
-   - Missing replay-tracking dictionary for query IDs.
-   - Arithmetic rule warning around subtraction path (tool flagged despite guard).
+## Work completed in this run
+- Added migration-program phase docs with explicit scope rationale and EVM-derived invariants.
+- Hardened TVM vault with query replay-protection (`E_REPLAY`, `processedQueries`, `consumeQuery`).
+- Expanded test coverage from 6 to 9 scenarios including replay and economic fail-closed cases.
+- Re-ran compile and tests with logs:
+  - `evidence/compile.log`
+  - `evidence/test-run.log`
+- Executed buyer-proof miniapp flow (`analyze/generate/compile/audit`) and verified evidence endpoints.
+- Added deployment readiness kit (env template, fail-closed plan validation script, smoke script, runbook).
 
-## Next Actions
-1. Patch mini-app API to pass language for compile/audit (`sourceLanguage: tact`).
-2. Add replay-protection map in vault for processed `queryId` values.
-3. Add explicit event emission/log contract pattern for indexer friendliness.
-4. Replace `activeCodeHash` authorization with full `set_code` upgrade flow + migration entrypoint.
+## Known deltas vs EVM behavior
+1. TVM wave-1 uses `validatorsCount` abstraction rather than full pubkeys/amount vectors used by EVM `triggerValidatorWithdrawals`.
+2. Event surface is not yet parity-complete with EVM rich event emission.
+3. Upgrade path is authorization-gate style; full proxy/set_code migration lifecycle remains a future step.
+4. Testnet package is ready at planning/template level; live broadcast requires deployer credentials and selected TON deploy tool wiring.
+
+## Blockers
+- **Remote push not confirmed yet**: repository push depends on configured GitHub auth/token availability in this runtime.
+
+## Next actions
+1. Implement full pubkey/amount payload support in TVM adapter path for tighter EVM parity.
+2. Add event/indexer-friendly emit strategy parity map.
+3. Implement full TVM upgrade execution flow (`set_code` governed path + migration entrypoint).
+4. Run live testnet broadcast once credentials/toolchain are provided; record tx hashes and post-deploy smoke transcript.

@@ -20,6 +20,7 @@ const E_ALREADY_RESUMED: Int = 105;
 const E_OSSIFIED: Int = 106;
 const E_INSUFFICIENT_FEE: Int = 107;
 const E_UPGRADE_NOT_AUTHORIZED: Int = 108;
+const E_REPLAY: Int = 109;
 
 message(0x53465452) SetFee {
     queryId: Int as uint64;
@@ -93,6 +94,7 @@ contract StakingVault with Deployable {
     pendingRefundRecipient: Address;
 
     activeCodeHash: Int as uint256;
+    processedQueries: map<Int, Bool>;
 
     init(owner: Address, nodeOperator: Address, depositor: Address, upgradeController: Address, withdrawalAdapter: Address) {
         self.owner = owner;
@@ -114,40 +116,47 @@ contract StakingVault with Deployable {
 
     receive(msg: SetFee) {
         self.requireOwner();
+        self.consumeQuery(msg.queryId);
         if (!(msg.perValidatorFee > 0)) { throw(E_ZERO_VALUE); }
         self.withdrawalFeePerValidator = msg.perValidatorFee;
     }
 
     receive(msg: Fund) {
         self.requireOwner();
+        self.consumeQuery(msg.queryId);
         if (!(context().value > 0)) { throw(E_ZERO_VALUE); }
     }
 
     receive(msg: Withdraw) {
         self.requireOwner();
+        self.consumeQuery(msg.queryId);
         if (!(msg.amount > 0)) { throw(E_ZERO_VALUE); }
         send(SendParameters{to: msg.recipient, value: msg.amount, bounce: false});
     }
 
     receive(msg: SetDepositor) {
         self.requireOwner();
+        self.consumeQuery(msg.queryId);
         self.depositor = msg.depositor;
     }
 
     receive(msg: PauseBeaconDeposits) {
         self.requireOwner();
+        self.consumeQuery(msg.queryId);
         if (!(!self.beaconChainDepositsPaused)) { throw(E_ALREADY_PAUSED); }
         self.beaconChainDepositsPaused = true;
     }
 
     receive(msg: ResumeBeaconDeposits) {
         self.requireOwner();
+        self.consumeQuery(msg.queryId);
         if (!(self.beaconChainDepositsPaused)) { throw(E_ALREADY_RESUMED); }
         self.beaconChainDepositsPaused = false;
     }
 
     receive(msg: DepositToBeacon) {
         if (!(sender() == self.depositor)) { throw(E_UNAUTHORIZED); }
+        self.consumeQuery(msg.queryId);
         if (!(!self.beaconChainDepositsPaused)) { throw(E_PAUSED); }
         if (!(msg.validatorsCount > 0)) { throw(E_INVALID_ARG); }
         if (!(msg.totalAmount > 0)) { throw(E_ZERO_VALUE); }
@@ -155,11 +164,13 @@ contract StakingVault with Deployable {
 
     receive(msg: RequestValidatorExit) {
         self.requireOwner();
+        self.consumeQuery(msg.queryId);
         if (!(msg.validatorsCount > 0)) { throw(E_INVALID_ARG); }
     }
 
     receive(msg: TriggerValidatorWithdrawal) {
         self.requireOwner();
+        self.consumeQuery(msg.queryId);
         if (!(msg.validatorsCount > 0)) { throw(E_INVALID_ARG); }
 
         let requiredFee = self.withdrawalFeePerValidator * msg.validatorsCount;
@@ -193,6 +204,7 @@ contract StakingVault with Deployable {
 
     receive(msg: AuthorizeUpgrade) {
         if (!(sender() == self.upgradeController)) { throw(E_UNAUTHORIZED); }
+        self.consumeQuery(msg.queryId);
         if (!(!self.ossified)) { throw(E_OSSIFIED); }
         self.activeCodeHash = msg.codeHash;
     }
@@ -217,9 +229,21 @@ contract StakingVault with Deployable {
     get fun get_pending_query_id(): Int { return self.pendingQueryId; }
     get fun get_pending_fee(): Int { return self.pendingFee; }
 
+    get fun get_query_processed(queryId: Int): Bool {
+        let seen = self.processedQueries.get(queryId);
+        return seen != null;
+    }
+
     get fun calculate_validator_withdrawal_fee(keysCount: Int): Int {
         if (!(keysCount > 0)) { throw(E_INVALID_ARG); }
         return keysCount * self.withdrawalFeePerValidator;
+    }
+
+    fun consumeQuery(queryId: Int) {
+        if (!(queryId > 0)) { throw(E_INVALID_ARG); }
+        let seen = self.processedQueries.get(queryId);
+        if (seen != null) { throw(E_REPLAY); }
+        self.processedQueries.set(queryId, true);
     }
 
     fun requireOwner() {

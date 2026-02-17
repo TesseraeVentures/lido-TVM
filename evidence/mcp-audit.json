@@ -1,1 +1,99 @@
-{"ok":true,"jobId":"f5b90653-9b1d-4de3-b95b-dd77d8bd7915","tier":"demo","toolName":"ton_audit","adapterPath":"/opt/ton-dev-mcp/mcp/dist/server.js","response":{"success":true,"semanticStatus":"fail","passed":false,"summary":{"critical":0,"high":2,"medium":0,"low":0,"info":0,"score":70},"findings":[{"file":"../../../tmp/ton-audit/audit_1771339713319.tact","rule":"TON-REPLAY-003","name":"Missing internal query_id replay tracking","severity":"high","category":"msg","categoryName":"Message Flow Security","tonSpecific":true,"line":25,"message":"query_id is parsed but no replay-tracking storage pattern was detected.","description":"State-changing internal handlers processing op+query_id messages should track processed query_id values to prevent replay in asynchronous workflows.","recommendation":"Track processed query_id per sender/op and reject duplicates.","fix":"Track processed query_id per sender/op and reject duplicates.","verification":"NEEDS_MANUAL_REVIEW","verificationReason":"No specific verification logic for this rule. Manual review recommended.","adjustedSeverity":"high"},{"file":"../../../tmp/ton-audit/audit_1771339713319.tact","rule":"TON-VAL-001","name":"Signed integer underflow risk","severity":"high","category":"val","categoryName":"Value & Arithmetic Safety","tonSpecific":false,"line":179,"message":"'value - requiredFee' without prior check that value >= requiredFee. TVM integers are signed — underflow produces a large negative number, not a revert. Add: throw_unless(ERR, value >= requiredFee);","description":"Subtraction without checking that the result is non-negative. TVM uses signed 257-bit integers, so underflow wraps to a large negative number rather than reverting. This can cause balance accounting errors.","recommendation":"Use explicit bounds checks and TVM-safe math helpers (muldiv, checked dict result flags).","fix":"Use explicit bounds checks and TVM-safe math helpers (muldiv, checked dict result flags).","verification":"CONFIRMED","verificationReason":"Subtraction without underflow check, but in admin-only path. Risk limited to admin error.","adjustedSeverity":"medium"}],"rawFindings":[],"verifiedFindings":[{"file":"../../../tmp/ton-audit/audit_1771339713319.tact","rule":"TON-REPLAY-003","name":"Missing internal query_id replay tracking","severity":"high","category":"msg","categoryName":"Message Flow Security","tonSpecific":true,"line":25,"message":"query_id is parsed but no replay-tracking storage pattern was detected.","description":"State-changing internal handlers processing op+query_id messages should track processed query_id values to prevent replay in asynchronous workflows.","recommendation":"Track processed query_id per sender/op and reject duplicates.","fix":"Track processed query_id per sender/op and reject duplicates.","verification":"NEEDS_MANUAL_REVIEW","verificationReason":"No specific verification logic for this rule. Manual review recommended.","adjustedSeverity":"high"},{"file":"../../../tmp/ton-audit/audit_1771339713319.tact","rule":"TON-VAL-001","name":"Signed integer underflow risk","severity":"high","category":"val","categoryName":"Value & Arithmetic Safety","tonSpecific":false,"line":179,"message":"'value - requiredFee' without prior check that value >= requiredFee. TVM integers are signed — underflow produces a large negative number, not a revert. Add: throw_unless(ERR, value >= requiredFee);","description":"Subtraction without checking that the result is non-negative. TVM uses signed 257-bit integers, so underflow wraps to a large negative number rather than reverting. This can cause balance accounting errors.","recommendation":"Use explicit bounds checks and TVM-safe math helpers (muldiv, checked dict result flags).","fix":"Use explicit bounds checks and TVM-safe math helpers (muldiv, checked dict result flags).","verification":"CONFIRMED","verificationReason":"Subtraction without underflow check, but in admin-only path. Risk limited to admin error.","adjustedSeverity":"medium"}],"verificationSummary":{"confirmed":1,"likelyFalsePositive":0,"needsManualReview":1},"rulepackVersion":"2.0.0"}}
+{
+  "ok": true,
+  "jobId": "f4555d7a-9e6f-44e9-9eee-c37e55cd43ae",
+  "tier": "demo",
+  "toolName": "ton_audit",
+  "adapterPath": "/opt/ton-dev-mcp/mcp/dist/server.js",
+  "response": {
+    "success": true,
+    "semanticStatus": "fail",
+    "passed": false,
+    "summary": {
+      "critical": 0,
+      "high": 2,
+      "medium": 0,
+      "low": 0,
+      "info": 0,
+      "score": 70
+    },
+    "findings": [
+      {
+        "file": "../../../tmp/ton-audit/audit_1771350194431.tact",
+        "rule": "TON-REPLAY-003",
+        "name": "Missing internal query_id replay tracking",
+        "severity": "high",
+        "category": "msg",
+        "categoryName": "Message Flow Security",
+        "tonSpecific": true,
+        "line": 26,
+        "message": "query_id is parsed but no replay-tracking storage pattern was detected.",
+        "description": "State-changing internal handlers processing op+query_id messages should track processed query_id values to prevent replay in asynchronous workflows.",
+        "recommendation": "Track processed query_id per sender/op and reject duplicates.",
+        "fix": "Track processed query_id per sender/op and reject duplicates.",
+        "verification": "NEEDS_MANUAL_REVIEW",
+        "verificationReason": "No specific verification logic for this rule. Manual review recommended.",
+        "adjustedSeverity": "high"
+      },
+      {
+        "file": "../../../tmp/ton-audit/audit_1771350194431.tact",
+        "rule": "TON-VAL-001",
+        "name": "Signed integer underflow risk",
+        "severity": "high",
+        "category": "val",
+        "categoryName": "Value & Arithmetic Safety",
+        "tonSpecific": false,
+        "line": 190,
+        "message": "'value - requiredFee' without prior check that value >= requiredFee. TVM integers are signed — underflow produces a large negative number, not a revert. Add: throw_unless(ERR, value >= requiredFee);",
+        "description": "Subtraction without checking that the result is non-negative. TVM uses signed 257-bit integers, so underflow wraps to a large negative number rather than reverting. This can cause balance accounting errors.",
+        "recommendation": "Use explicit bounds checks and TVM-safe math helpers (muldiv, checked dict result flags).",
+        "fix": "Use explicit bounds checks and TVM-safe math helpers (muldiv, checked dict result flags).",
+        "verification": "CONFIRMED",
+        "verificationReason": "Subtraction without underflow check, but in admin-only path. Risk limited to admin error.",
+        "adjustedSeverity": "medium"
+      }
+    ],
+    "rawFindings": [],
+    "verifiedFindings": [
+      {
+        "file": "../../../tmp/ton-audit/audit_1771350194431.tact",
+        "rule": "TON-REPLAY-003",
+        "name": "Missing internal query_id replay tracking",
+        "severity": "high",
+        "category": "msg",
+        "categoryName": "Message Flow Security",
+        "tonSpecific": true,
+        "line": 26,
+        "message": "query_id is parsed but no replay-tracking storage pattern was detected.",
+        "description": "State-changing internal handlers processing op+query_id messages should track processed query_id values to prevent replay in asynchronous workflows.",
+        "recommendation": "Track processed query_id per sender/op and reject duplicates.",
+        "fix": "Track processed query_id per sender/op and reject duplicates.",
+        "verification": "NEEDS_MANUAL_REVIEW",
+        "verificationReason": "No specific verification logic for this rule. Manual review recommended.",
+        "adjustedSeverity": "high"
+      },
+      {
+        "file": "../../../tmp/ton-audit/audit_1771350194431.tact",
+        "rule": "TON-VAL-001",
+        "name": "Signed integer underflow risk",
+        "severity": "high",
+        "category": "val",
+        "categoryName": "Value & Arithmetic Safety",
+        "tonSpecific": false,
+        "line": 190,
+        "message": "'value - requiredFee' without prior check that value >= requiredFee. TVM integers are signed — underflow produces a large negative number, not a revert. Add: throw_unless(ERR, value >= requiredFee);",
+        "description": "Subtraction without checking that the result is non-negative. TVM uses signed 257-bit integers, so underflow wraps to a large negative number rather than reverting. This can cause balance accounting errors.",
+        "recommendation": "Use explicit bounds checks and TVM-safe math helpers (muldiv, checked dict result flags).",
+        "fix": "Use explicit bounds checks and TVM-safe math helpers (muldiv, checked dict result flags).",
+        "verification": "CONFIRMED",
+        "verificationReason": "Subtraction without underflow check, but in admin-only path. Risk limited to admin error.",
+        "adjustedSeverity": "medium"
+      }
+    ],
+    "verificationSummary": {
+      "confirmed": 1,
+      "likelyFalsePositive": 0,
+      "needsManualReview": 1
+    },
+    "rulepackVersion": "2.0.0"
+  }
+}

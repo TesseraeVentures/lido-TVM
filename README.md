@@ -9,7 +9,9 @@ Behavioral-equivalent TON/TVM migration workstream for Lido protocol components.
 ## Structure
 - `contracts/` — Tact contracts
 - `tests/` — sandbox tests
-- `docs/` — migration/architecture specs
+- `docs/` — migration/architecture specs + phase docs + testnet runbook
+- `scripts/` — smoke and deployment-plan automation
+- `deploy/` — environment templates
 - `evidence/` — run artifacts and E2E proof outputs
 
 ## Goal

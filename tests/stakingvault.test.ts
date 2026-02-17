@@ -70,8 +70,7 @@ describe('StakingVault migration suite', () => {
     expect(ok.transactions).toHaveTransaction({ success: true });
 
     await vault.send(owner.getSender(), { value: toNano('0.05') }, { $$type: 'PauseBeaconDeposits', queryId: 15n });
-    const paused = await vault.getGetPaused();
-    expect(paused).toBe(true);
+    expect(await vault.getGetPaused()).toBe(true);
 
     const blocked = await vault.send(depositor.getSender(), { value: toNano('0.05') }, {
       $$type: 'DepositToBeacon',
@@ -89,7 +88,7 @@ describe('StakingVault migration suite', () => {
     await vault.send(owner.getSender(), { value: toNano('0.05') }, { $$type: 'SetFee', queryId: 18n, perValidatorFee: toNano('0.01') });
 
     const before = await recipient.getBalance();
-    const tx = await vault.send(owner.getSender(), { value: toNano('0.05') }, {
+    const tx = await vault.send(owner.getSender(), { value: toNano('0.06') }, {
       $$type: 'TriggerValidatorWithdrawal',
       queryId: 19n,
       validatorsCount: 3n,
@@ -97,14 +96,25 @@ describe('StakingVault migration suite', () => {
     });
     expect(tx.transactions).toHaveTransaction({ from: vault.address, to: adapter.address, success: true });
 
-    const q = await adapter.getGetLastQueryId();
-    expect(q).toBe(19n);
+    expect(await adapter.getGetLastQueryId()).toBe(19n);
+    expect(await adapter.getGetLastValidatorsCount()).toBe(3n);
 
     const after = await recipient.getBalance();
     expect(after > before).toBe(true);
   });
 
-  it('bounce path refunds pending fee when adapter message bounces', async () => {
+  it('insufficient fee fails closed', async () => {
+    await vault.send(owner.getSender(), { value: toNano('0.05') }, { $$type: 'SetFee', queryId: 30n, perValidatorFee: toNano('0.02') });
+    const tx = await vault.send(owner.getSender(), { value: toNano('0.019') }, {
+      $$type: 'TriggerValidatorWithdrawal',
+      queryId: 31n,
+      validatorsCount: 1n,
+      refundRecipient: recipient.address,
+    });
+    expect(tx.transactions).toHaveTransaction({ success: false });
+  });
+
+  it('bounce path refunds pending fee when adapter message bounces (async+bounce)', async () => {
     const badAdapter = Address.parseRaw('0:' + '11'.repeat(32));
     const badVault = blockchain.openContract(await StakingVault.fromInit(
       owner.address,
@@ -125,14 +135,36 @@ describe('StakingVault migration suite', () => {
     });
 
     expect(tx.transactions).toHaveTransaction({ from: badVault.address, to: badAdapter, success: false, aborted: true });
+    expect(await badVault.getGetPendingFee()).toBe(0n);
+    expect(await badVault.getGetPendingQueryId()).toBe(0n);
 
-    const pending = await badVault.getGetPendingFee();
-    expect(pending).toBe(0n);
     const after = await recipient.getBalance();
     expect(after > before).toBe(true);
   });
 
-  it('upgrade gating + ossify blocks further authorizations', async () => {
+  it('query replay is rejected (replay-protection invariant)', async () => {
+    const first = await vault.send(owner.getSender(), { value: toNano('0.05') }, { $$type: 'SetFee', queryId: 40n, perValidatorFee: toNano('0.015') });
+    expect(first.transactions).toHaveTransaction({ success: true });
+
+    const second = await vault.send(owner.getSender(), { value: toNano('0.05') }, { $$type: 'SetFee', queryId: 40n, perValidatorFee: toNano('0.016') });
+    expect(second.transactions).toHaveTransaction({ success: false });
+
+    expect(await vault.getGetQueryProcessed(40n)).toBe(true);
+    expect(await vault.getGetWithdrawalFeePerValidator()).toBe(toNano('0.015'));
+  });
+
+  it('invalid args fail: zero validator count / zero keysCount', async () => {
+    const badExit = await vault.send(owner.getSender(), { value: toNano('0.05') }, {
+      $$type: 'RequestValidatorExit',
+      queryId: 50n,
+      validatorsCount: 0n,
+    });
+    expect(badExit.transactions).toHaveTransaction({ success: false });
+
+    await expect(vault.getCalculateValidatorWithdrawalFee(0n)).rejects.toThrow();
+  });
+
+  it('upgrade gating + ossify blocks further authorizations (upgrade/ossify)', async () => {
     const unauthorized = await vault.send(randomUser.getSender(), { value: toNano('0.05') }, {
       $$type: 'AuthorizeUpgrade',
       queryId: 22n,
