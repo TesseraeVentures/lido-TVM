@@ -1,0 +1,105 @@
+{
+  "base": "http://127.0.0.1:3011",
+  "fixturePath": "/root/clawd/output/ton-stakingvault-migration/contracts/StakingVault.tact",
+  "startedAt": "2026-02-17T17:30:34.003Z",
+  "steps": [
+    {
+      "step": "analyze",
+      "httpOk": true,
+      "status": 200,
+      "semanticOk": true,
+      "jobId": "05da52cb-679c-4c58-8609-bc81a8a01304",
+      "responseSummary": {
+        "ok": true,
+        "toolName": "ton_migrate_analyze",
+        "error": null,
+        "success": true,
+        "semanticStatus": null
+      },
+      "evidence": {
+        "view": {
+          "ok": true,
+          "status": 200
+        },
+        "download": {
+          "ok": true,
+          "status": 200
+        }
+      }
+    },
+    {
+      "step": "generate",
+      "httpOk": true,
+      "status": 200,
+      "semanticOk": true,
+      "jobId": "9308179d-513b-4363-89c1-2a760cf1f45d",
+      "responseSummary": {
+        "ok": true,
+        "toolName": "ton_migrate_generate",
+        "error": null,
+        "success": true,
+        "semanticStatus": null
+      },
+      "evidence": {
+        "view": {
+          "ok": true,
+          "status": 200
+        },
+        "download": {
+          "ok": true,
+          "status": 200
+        }
+      }
+    },
+    {
+      "step": "compile",
+      "httpOk": true,
+      "status": 200,
+      "semanticOk": true,
+      "jobId": "8c0e6efd-73b9-42c3-819d-ff27065913be",
+      "responseSummary": {
+        "ok": true,
+        "toolName": "ton_compile",
+        "error": null,
+        "success": true,
+        "semanticStatus": null
+      },
+      "evidence": {
+        "view": {
+          "ok": true,
+          "status": 200
+        },
+        "download": {
+          "ok": true,
+          "status": 200
+        }
+      }
+    },
+    {
+      "step": "audit",
+      "httpOk": true,
+      "status": 200,
+      "semanticOk": true,
+      "jobId": "8f0b9e6f-79e8-4c60-badd-985dd91c66e5",
+      "responseSummary": {
+        "ok": true,
+        "toolName": "ton_audit",
+        "error": null,
+        "success": true,
+        "semanticStatus": "fail"
+      },
+      "evidence": {
+        "view": {
+          "ok": true,
+          "status": 200
+        },
+        "download": {
+          "ok": true,
+          "status": 200
+        }
+      }
+    }
+  ],
+  "ok": true,
+  "finishedAt": "2026-02-17T17:30:36.378Z"
+}

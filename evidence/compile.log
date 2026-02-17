@@ -1,0 +1,27 @@
+💼 Compiling project staking_vault ...
+   > StakingVault: tact compiler
+   > StakingVault: func compiler
+   > Packaging
+   > StakingVault
+   > Bindings
+   > StakingVault
+   > Reports
+   > StakingVault
+💼 Compiling project upgrade_controller ...
+   > UpgradeController: tact compiler
+   > UpgradeController: func compiler
+   > Packaging
+   > UpgradeController
+   > Bindings
+   > UpgradeController
+   > Reports
+   > UpgradeController
+💼 Compiling project withdrawal_adapter_stub ...
+   > WithdrawalAdapterStub: tact compiler
+   > WithdrawalAdapterStub: func compiler
+   > Packaging
+   > WithdrawalAdapterStub
+   > Bindings
+   > WithdrawalAdapterStub
+   > Reports
+   > WithdrawalAdapterStub

@@ -1,0 +1,49 @@
+
+> ton-stakingvault-migration@1.0.0 test
+> npm run build && jest --runInBand
+
+
+> ton-stakingvault-migration@1.0.0 build
+> npx tact -c tact.config.json
+
+💼 Compiling project staking_vault ...
+   > StakingVault: tact compiler
+   > StakingVault: func compiler
+   > Packaging
+   > StakingVault
+   > Bindings
+   > StakingVault
+   > Reports
+   > StakingVault
+💼 Compiling project upgrade_controller ...
+   > UpgradeController: tact compiler
+   > UpgradeController: func compiler
+   > Packaging
+   > UpgradeController
+   > Bindings
+   > UpgradeController
+   > Reports
+   > UpgradeController
+💼 Compiling project withdrawal_adapter_stub ...
+   > WithdrawalAdapterStub: tact compiler
+   > WithdrawalAdapterStub: func compiler
+   > Packaging
+   > WithdrawalAdapterStub
+   > Bindings
+   > WithdrawalAdapterStub
+   > Reports
+   > WithdrawalAdapterStub
+PASS tests/stakingvault.test.ts
+  StakingVault migration suite
+    ✓ owner fund/withdraw happy path (334 ms)
+    ✓ access control on owner-only messages (122 ms)
+    ✓ depositor-only deposit to beacon + pause/resume gating (223 ms)
+    ✓ trigger withdrawal sends to adapter and refunds excess (133 ms)
+    ✓ bounce path refunds pending fee when adapter message bounces (172 ms)
+    ✓ upgrade gating + ossify blocks further authorizations (160 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       6 passed, 6 total
+Snapshots:   0 total
+Time:        3.029 s, estimated 4 s
+Ran all test suites.

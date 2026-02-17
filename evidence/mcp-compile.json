@@ -1,0 +1,1 @@
+{"ok":false,"jobId":"b516499d-19be-4de8-8966-f5d1ef844ed5","tier":"demo","toolName":"ton_compile","adapterPath":"/opt/ton-dev-mcp/mcp/dist/server.js","response":{"success":false,"errors":["Unknown language: undefined"]},"error":"Tool reported success=false"}

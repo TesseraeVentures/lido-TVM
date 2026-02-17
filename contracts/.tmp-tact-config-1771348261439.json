@@ -1,0 +1,9 @@
+{
+  "projects": [
+    {
+      "name": "compile_StakingVault",
+      "path": "StakingVault.tact",
+      "output": ".tmp-tact-build/compile_StakingVault"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
+  "projects": [
+    {
+      "name": "staking_vault",
+      "path": "contracts/StakingVault.tact",
+      "output": "build/staking_vault"
+    },
+    {
+      "name": "upgrade_controller",
+      "path": "contracts/UpgradeController.tact",
+      "output": "build/upgrade_controller"
+    },
+    {
+      "name": "withdrawal_adapter_stub",
+      "path": "contracts/WithdrawalAdapterStub.tact",
+      "output": "build/withdrawal_adapter_stub"
+    }
+  ]
+}
