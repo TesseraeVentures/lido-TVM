@@ -1,62 +1,60 @@
 {
   "network": "testnet",
-  "timestamp": "2026-02-23T17:48:51.372Z",
+  "timestamp": "2026-02-23T18:30:06.758Z",
+  "endpoint": "https://testnet.toncenter.com/api/v2/jsonRPC",
+  "deployer": "EQBkg6JGZ3m_JCyJy0DBKcR8A_fo8wel-NqWKlIBg6yi7GI5",
   "tests": [
     {
       "name": "deploy-vault",
       "status": "FAIL",
-      "error": "Vault not active at EQBni67VDS3UM3E9zKzsp0SS9tGvXJt3B53l4tmzV9Huj0gk, state: uninitialized",
-      "durationMs": 41065
+      "error": "Vault at EQBni67VDS3UM3E9zKzsp0SS9tGvXJt3B53l4tmzV9Huj0gk state: uninitialized",
+      "durationMs": 56103
     },
     {
       "name": "connect-vault",
       "status": "PASS",
-      "durationMs": 11114
+      "durationMs": 30997
     },
     {
       "name": "mint-shares",
-      "status": "FAIL",
-      "error": "Request failed with status code 500",
-      "durationMs": 8467
+      "status": "PASS",
+      "durationMs": 15648
     },
     {
       "name": "check-stton-balance",
       "status": "PASS",
-      "durationMs": 177
+      "durationMs": 3214
     },
     {
       "name": "permissions-grant-revoke",
       "status": "FAIL",
-      "error": "Request failed with status code 429",
-      "durationMs": 29111
+      "error": "Unable to execute get method. Got exit_code: 5",
+      "durationMs": 51566
     },
     {
       "name": "lazy-oracle-report",
-      "status": "FAIL",
-      "error": "Report not stored",
-      "durationMs": 13434
+      "status": "PASS",
+      "durationMs": 106401
     },
     {
       "name": "node-operator-fee-disburse",
       "status": "PASS",
-      "durationMs": 12329
+      "durationMs": 9549
     },
     {
       "name": "predeposit-guarantee-bond",
-      "status": "FAIL",
-      "error": "Request failed with status code 429",
-      "durationMs": 6684
+      "status": "PASS",
+      "durationMs": 24067
     },
     {
       "name": "cl-proof-verifier-set-root",
-      "status": "FAIL",
-      "error": "Request failed with status code 429",
-      "durationMs": 6700
+      "status": "PASS",
+      "durationMs": 41081
     }
   ],
   "summary": {
-    "passed": 3,
-    "failed": 6,
+    "passed": 7,
+    "failed": 2,
     "total": 9
   }
 }

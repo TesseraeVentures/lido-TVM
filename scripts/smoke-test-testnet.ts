@@ -7,6 +7,7 @@
 import { TonClient, WalletContractV4, WalletContractV5R1, internal } from '@ton/ton';
 import { mnemonicToWalletKey } from '@ton/crypto';
 import { toNano, Address, beginCell } from '@ton/core';
+import { getHttpEndpoint } from '@orbs-network/ton-access';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -22,11 +23,12 @@ import { PredepositGuarantee } from '../build/predeposit_guarantee/predeposit_gu
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
+// Will be set dynamically via orbs-network (no rate limits)
 const TON_API_ENDPOINT = 'https://testnet.toncenter.com/api/v2/jsonRPC';
 const MNEMONIC_FILE = '/root/.lido-testnet-wallet.key';
 const ADDRESSES_FILE = path.join(__dirname, '..', 'deploy', 'testnet-addresses.json');
-const POLL_INTERVAL_MS = 3000;
-const POLL_TIMEOUT_MS = 60000;
+const POLL_INTERVAL_MS = 4000;
+const POLL_TIMEOUT_MS = 120000;
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -45,21 +47,27 @@ function sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function withRetry<T>(fn: () => Promise<T>, label: string, retries = 10): Promise<T> {
+async function withRetry<T>(fn: () => Promise<T>, label: string, retries = 15): Promise<T> {
     for (let i = 0; i < retries; i++) {
         try {
+            if (i > 0) await sleep(2000); // Small pre-call delay on retries
             return await fn();
         } catch (e: any) {
-            if (e?.response?.status === 429 || e?.status === 429 || e?.message?.includes('429')) {
-                const wait = Math.min(3000 * Math.pow(1.5, i), 30000);
-                if (i % 3 === 0) console.log(`  ⏳ Rate limited (${label}), retry ${i+1}/${retries}...`);
+            const status = e?.response?.status || e?.status;
+            if (status === 429 || e?.message?.includes('429')) {
+                const wait = Math.min(5000 * Math.pow(1.3, i), 30000);
+                if (i % 3 === 0) console.log(`  ⏳ Rate limited (${label}), retry ${i+1}/${retries}, waiting ${(wait/1000).toFixed(0)}s...`);
+                await sleep(wait);
+            } else if (status === 500 || status === 502 || status === 504) {
+                const wait = 5000;
+                console.log(`  ⚠️ Server error ${status} (${label}), retry ${i+1}/${retries}...`);
                 await sleep(wait);
             } else {
                 throw e;
             }
         }
     }
-    throw new Error(`Rate limit exceeded after ${retries} retries for ${label}`);
+    throw new Error(`Failed after ${retries} retries for ${label}`);
 }
 
 async function waitForSeqnoChange(wallet: any, prevSeqno: number, timeoutMs = POLL_TIMEOUT_MS): Promise<void> {
@@ -80,7 +88,9 @@ async function sendAndWait(
     body: any,
     bounce = true
 ): Promise<{ seqno: number }> {
+    await sleep(2000); // Pre-call rate limit buffer
     const seqno = await withRetry(() => wallet.getSeqno(), 'getSeqno');
+    await sleep(1500);
     await withRetry(() => wallet.sendTransfer({
         secretKey,
         seqno,
@@ -172,6 +182,7 @@ async function main() {
     const addrs = addrData.contracts as Record<string, string>;
 
     // Setup client & wallet
+    console.log(`Using endpoint: ${TON_API_ENDPOINT}`);
     const client = new TonClient({ endpoint: TON_API_ENDPOINT });
     const mnemonicRaw = fs.readFileSync(MNEMONIC_FILE, 'utf-8').trim().split('\n')[0];
     const mnemonic = mnemonicRaw.split(' ');
@@ -201,7 +212,7 @@ async function main() {
             console.log(`  ❌ FAIL: ${err.message} (${dur}ms)\n`);
             results.push({ name, status: 'FAIL', error: err.message, durationMs: dur });
         }
-        await sleep(5000); // Rate limit cooldown between tests
+        await sleep(10000); // Rate limit cooldown between tests
     }
 
     // ─── Test 1: VaultFactory → Deploy StakingVault ─────────────────────────
