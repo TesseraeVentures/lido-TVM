@@ -308,7 +308,7 @@
         <div class="stat-label">Deployed</div>
       </div>
       <div class="stat">
-        <div class="stat-value">7/9</div>
+        <div class="stat-value">9/9</div>
         <div class="stat-label">On-Chain Tests</div>
       </div>
     </div>
@@ -472,20 +472,20 @@
     <tr><td>WithdrawalAdapterStub</td><td>EQC8pfAOaDNegkc2FT4rvBr-G43Sbl_fX1AsfJoz_EZbZTfn</td></tr>
   </table>
   
-  <h3>On-Chain Smoke Tests: 7/9 Passing</h3>
+  <h3>On-Chain Smoke Tests: 9/9 Passing ✅</h3>
   <table class="no-break">
     <tr><th>Test</th><th>Status</th><th>Notes</th></tr>
+    <tr><td>deploy-vault</td><td><span class="check">✅ PASS</span></td><td>VaultFactory deploys StakingVault on-chain</td></tr>
     <tr><td>connect-vault</td><td><span class="check">✅ PASS</span></td><td>VaultHub accepts vault registration</td></tr>
     <tr><td>mint-shares</td><td><span class="check">✅ PASS</span></td><td>Share minting executes correctly</td></tr>
     <tr><td>check-stton-balance</td><td><span class="check">✅ PASS</span></td><td>StTON getter returns correct balance</td></tr>
+    <tr><td>permissions-grant-revoke</td><td><span class="check">✅ PASS</span></td><td>Role 5 granted then revoked, verified</td></tr>
     <tr><td>lazy-oracle-report</td><td><span class="check">✅ PASS</span></td><td>Oracle report submission confirmed</td></tr>
     <tr><td>node-operator-fee</td><td><span class="check">✅ PASS</span></td><td>Fee disbursement executes on-chain</td></tr>
     <tr><td>predeposit-bond</td><td><span class="check">✅ PASS</span></td><td>Bond deposit confirmed</td></tr>
     <tr><td>cl-proof-verifier</td><td><span class="check">✅ PASS</span></td><td>State root submission confirmed</td></tr>
-    <tr><td>deploy-vault</td><td><span class="warn">⚠️</span></td><td>Factory address computation (test issue)</td></tr>
-    <tr><td>permissions-grant</td><td><span class="warn">⚠️</span></td><td>Tx succeeded, getter serialization</td></tr>
   </table>
-  <p class="small">The 2 "failures" are test harness issues (address computation, BigInt serialization), not contract logic failures. All 9 scenarios verified passing in local sandbox (182/182 tests).</p>
+  <p class="small">All 9 on-chain smoke tests pass. Tests exercise the full protocol lifecycle: vault deployment, share minting, access control, oracle reporting, fee distribution, bonding, and state verification.</p>
   <div class="page-num">4</div>
 </div>
 

@@ -94,17 +94,27 @@ async function main() {
 
     // ─── Test 1: VaultFactory → Deploy StakingVault ───────────────────────
     await runTest('deploy-vault', async () => {
+        // Use Tact ABI: last 3 fields go in a ref cell
+        const refCell = beginCell()
+            .storeUint(3000, 16)   // reserveRatioBP
+            .storeUint(100, 16)    // infraFeeBP
+            .storeUint(50, 16)     // liquidityFeeBP
+            .endCell();
         const createVaultBody = beginCell()
-            .storeUint(1129469014, 32).storeUint(900n, 64)
-            .storeAddress(admin).storeAddress(admin).storeAddress(admin)
-            .storeCoins(toNano('10000')).storeUint(3000, 16).storeUint(100, 16).storeUint(50, 16)
+            .storeUint(1129469014, 32)  // CreateVault opcode
+            .storeUint(1000n, 64)       // queryId (fresh)
+            .storeAddress(admin)         // owner
+            .storeAddress(admin)         // nodeOperator
+            .storeAddress(admin)         // depositor
+            .storeCoins(toNano('10000')) // shareLimit
+            .storeRef(refCell)
             .endCell();
         await sendTx(Address.parse(addrs['VaultFactory']), toNano('3'), createVaultBody, 'deploy-vault');
         // Verify vault created
         const factory = client.open(VaultFactory.fromAddress(Address.parse(addrs['VaultFactory'])));
         const vaultAddr = await api(() => factory.getGetVaultAddress(admin, admin, admin), 'vault-addr');
-        // Give it time to deploy via internal message
-        await sleep(15000);
+        // Give it time to deploy via internal message chain
+        await sleep(20000);
         const state = await api(() => client.getContractState(vaultAddr), 'vault-state');
         if (state.state !== 'active') {
             throw new Error(`Vault at ${vaultAddr.toString()} state: ${state.state}`);
@@ -144,31 +154,36 @@ async function main() {
     // ─── Test 5: Permissions → Grant/Revoke ───────────────────────────────
     await runTest('permissions-grant-revoke', async () => {
         const perms = client.open(Permissions.fromAddress(Address.parse(addrs['Permissions'])));
-        const role = BigInt('0x' + '01'.repeat(32));
+        // Role is uint8 (0-11). Use role 5 (ROLE_VAULT_MASTER)
+        const role = 5n;
 
-        // Grant
+        // Grant — opcode 0x50475254, role is 8 bits
         const grantBody = beginCell()
-            .storeUint(1346851412, 32).storeUint(903n, 64)
-            .storeAddress(admin).storeUint(role, 256)
+            .storeUint(1346851412, 32)   // PermGrantRole
+            .storeUint(1003n, 64)        // queryId
+            .storeAddress(admin)
+            .storeUint(Number(role), 8)  // role as uint8
             .endCell();
         await sendTx(Address.parse(addrs['Permissions']), toNano('0.1'), grantBody, 'perm-grant');
         
         await sleep(5000);
         const has = await api(() => perms.getHasRole(admin, role), 'perm-check');
         if (!has) throw new Error('Role not granted');
-        console.log('    Role granted ✓');
+        console.log('    Role 5 granted ✓');
 
-        // Revoke
+        // Revoke — opcode 0x50525652, role is 8 bits
         const revokeBody = beginCell()
-            .storeUint(3389546695, 32).storeUint(904n, 64)
-            .storeAddress(admin).storeUint(role, 256)
+            .storeUint(1347573330, 32)   // PermRevokeRole
+            .storeUint(1004n, 64)        // queryId
+            .storeAddress(admin)
+            .storeUint(Number(role), 8)  // role as uint8
             .endCell();
         await sendTx(Address.parse(addrs['Permissions']), toNano('0.1'), revokeBody, 'perm-revoke');
         
         await sleep(5000);
         const still = await api(() => perms.getHasRole(admin, role), 'perm-check2');
         if (still) throw new Error('Role not revoked');
-        console.log('    Role revoked ✓');
+        console.log('    Role 5 revoked ✓');
     });
 
     // ─── Test 6: LazyOracle → Report ──────────────────────────────────────

@@ -16,7 +16,7 @@ We have completed a full behavioral replication of **Lido's staking vault protoc
 - **17 contracts** implemented in Tact (3,580 lines)
 - **182 unit tests** — all passing (behavioral equivalence verified in sandbox)
 - **16 contracts deployed** to TON testnet — all active on-chain
-- **7/9 on-chain smoke tests passing** — full protocol workflows verified
+- **9/9 on-chain smoke tests passing** — full protocol workflows verified
 - **0 audit findings** from automated security scanner
 - **~0.36 TON** total deployment cost (~$0.72)
 
@@ -199,23 +199,23 @@ All 16 contracts are **active** on TON testnet and can be verified via [testnet.
 | Dashboard | [`EQDEZkm14hZk1FaUCEXMGa-CqqeMpPdOcNdnaGkIbeRY5d8C`](https://testnet.tonscan.org/address/EQDEZkm14hZk1FaUCEXMGa-CqqeMpPdOcNdnaGkIbeRY5d8C) |
 | PredepositGuarantee | [`EQBi7zuyuXrRFlEpI2Zw5ORJ8ZVnHZ3gnHfck7wn3VmT1coG`](https://testnet.tonscan.org/address/EQBi7zuyuXrRFlEpI2Zw5ORJ8ZVnHZ3gnHfck7wn3VmT1coG) |
 
-### 4.3 On-Chain Smoke Tests: 7/9 Passing
+### 4.3 On-Chain Smoke Tests: 9/9 Passing ✅
 
-Testnet smoke tests were executed against the deployed contracts, verifying full protocol workflows on-chain.
+All 9 testnet smoke tests pass, verifying full protocol workflows on-chain.
 
 | Test | Status | Notes |
 |------|--------|-------|
+| deploy-vault | ✅ PASS | VaultFactory deploys StakingVault on-chain |
 | connect-vault | ✅ PASS | VaultHub accepts vault registration |
 | mint-shares | ✅ PASS | Share minting executes correctly |
 | check-stton-balance | ✅ PASS | StTON getter returns correct balance |
+| permissions-grant-revoke | ✅ PASS | Role granted, verified, revoked, verified |
 | lazy-oracle-report | ✅ PASS | Oracle report submission confirmed |
 | node-operator-fee-disburse | ✅ PASS | Fee disbursement executes on-chain |
 | predeposit-guarantee-bond | ✅ PASS | Bond deposit confirmed |
 | cl-proof-verifier-set-root | ✅ PASS | State root submission confirmed |
-| deploy-vault | ⚠️ TEST ISSUE | Factory address computation (test harness) |
-| permissions-grant-revoke | ⚠️ TEST ISSUE | Tx succeeded, getter BigInt serialization |
 
-**Note:** The 2 "failures" are test harness issues (address computation, BigInt serialization), not contract logic failures. All 9 scenarios are verified as passing in the local sandbox test suite (182/182 tests).
+Tests exercise the full protocol lifecycle: vault deployment, share minting, access control, oracle reporting, fee distribution, bonding, and state verification.
 
 ---
 

@@ -1,60 +1,58 @@
 {
   "network": "testnet",
-  "timestamp": "2026-02-23T18:30:06.758Z",
+  "timestamp": "2026-02-23T18:46:51.612Z",
   "endpoint": "https://testnet.toncenter.com/api/v2/jsonRPC",
   "deployer": "EQBkg6JGZ3m_JCyJy0DBKcR8A_fo8wel-NqWKlIBg6yi7GI5",
   "tests": [
     {
       "name": "deploy-vault",
-      "status": "FAIL",
-      "error": "Vault at EQBni67VDS3UM3E9zKzsp0SS9tGvXJt3B53l4tmzV9Huj0gk state: uninitialized",
-      "durationMs": 56103
+      "status": "PASS",
+      "durationMs": 45056
     },
     {
       "name": "connect-vault",
       "status": "PASS",
-      "durationMs": 30997
+      "durationMs": 12523
     },
     {
       "name": "mint-shares",
       "status": "PASS",
-      "durationMs": 15648
+      "durationMs": 26485
     },
     {
       "name": "check-stton-balance",
       "status": "PASS",
-      "durationMs": 3214
+      "durationMs": 3175
     },
     {
       "name": "permissions-grant-revoke",
-      "status": "FAIL",
-      "error": "Unable to execute get method. Got exit_code: 5",
-      "durationMs": 51566
+      "status": "PASS",
+      "durationMs": 56060
     },
     {
       "name": "lazy-oracle-report",
       "status": "PASS",
-      "durationMs": 106401
+      "durationMs": 24639
     },
     {
       "name": "node-operator-fee-disburse",
       "status": "PASS",
-      "durationMs": 9549
+      "durationMs": 12195
     },
     {
       "name": "predeposit-guarantee-bond",
       "status": "PASS",
-      "durationMs": 24067
+      "durationMs": 21363
     },
     {
       "name": "cl-proof-verifier-set-root",
       "status": "PASS",
-      "durationMs": 41081
+      "durationMs": 27476
     }
   ],
   "summary": {
-    "passed": 7,
-    "failed": 2,
+    "passed": 9,
+    "failed": 0,
     "total": 9
   }
 }
