@@ -45,6 +45,46 @@
       "name": "st_ton",
       "path": "contracts/StTON.tact",
       "output": "build/st_ton"
+    },
+    {
+      "name": "cl_proof_verifier",
+      "path": "contracts/CLProofVerifier.tact",
+      "output": "build/cl_proof_verifier"
+    },
+    {
+      "name": "node_operator_fee",
+      "path": "contracts/NodeOperatorFee.tact",
+      "output": "build/node_operator_fee"
+    },
+    {
+      "name": "permissions",
+      "path": "contracts/Permissions.tact",
+      "output": "build/permissions"
+    },
+    {
+      "name": "predeposit_guarantee",
+      "path": "contracts/PredepositGuarantee.tact",
+      "output": "build/predeposit_guarantee"
+    },
+    {
+      "name": "validator_consolidation_requests",
+      "path": "contracts/ValidatorConsolidationRequests.tact",
+      "output": "build/validator_consolidation_requests"
+    },
+    {
+      "name": "ref_slot_cache",
+      "path": "contracts/RefSlotCache.tact",
+      "output": "build/ref_slot_cache"
+    },
+    {
+      "name": "recover_tokens",
+      "path": "contracts/RecoverTokens.tact",
+      "output": "build/recover_tokens"
+    },
+    {
+      "name": "me_if_nobody_else",
+      "path": "contracts/MeIfNobodyElse.tact",
+      "output": "build/me_if_nobody_else"
     }
   ]
 }
